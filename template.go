@@ -131,6 +131,7 @@ type Message struct {
 
 	HasExtensions bool `json:"hasExtensions"`
 	HasFields     bool `json:"hasFields"`
+	HasOneofs     bool `json:"hasOneofs"`
 
 	Extensions []*MessageExtension `json:"extensions"`
 	Fields     []*MessageField     `json:"fields"`
@@ -148,6 +149,8 @@ type MessageField struct {
 	LongType     string `json:"longType"`
 	FullType     string `json:"fullType"`
 	IsMap        bool   `json:"ismap"`
+	IsOneof      bool   `json:"isoneof"`
+	OneofDecl    string `json:"oneofdecl"`
 	DefaultValue string `json:"defaultValue"`
 }
 
@@ -263,6 +266,7 @@ func parseMessage(pm *protokit.Descriptor) *Message {
 		Description:   description(pm.GetComments().String()),
 		HasExtensions: len(pm.GetExtensions()) > 0,
 		HasFields:     len(pm.GetMessageFields()) > 0,
+		HasOneofs:     len(pm.GetOneofDecl()) > 0,
 		Extensions:    make([]*MessageExtension, 0, len(pm.Extensions)),
 		Fields:        make([]*MessageField, 0, len(pm.Fields)),
 	}
@@ -272,7 +276,7 @@ func parseMessage(pm *protokit.Descriptor) *Message {
 	}
 
 	for _, f := range pm.Fields {
-		msg.Fields = append(msg.Fields, parseMessageField(f))
+		msg.Fields = append(msg.Fields, parseMessageField(f, pm.GetOneofDecl()))
 	}
 
 	return msg
@@ -287,7 +291,7 @@ func parseMessageExtension(pe *protokit.ExtensionDescriptor) *MessageExtension {
 	}
 }
 
-func parseMessageField(pf *protokit.FieldDescriptor) *MessageField {
+func parseMessageField(pf *protokit.FieldDescriptor, oneofDecls []*descriptor.OneofDescriptorProto) *MessageField {
 	t, lt, ft := parseType(pf)
 
 	m := &MessageField{
@@ -298,6 +302,11 @@ func parseMessageField(pf *protokit.FieldDescriptor) *MessageField {
 		LongType:     lt,
 		FullType:     ft,
 		DefaultValue: pf.GetDefaultValue(),
+		IsOneof:      pf.OneofIndex != nil,
+	}
+
+	if m.IsOneof {
+		m.OneofDecl = oneofDecls[pf.GetOneofIndex()].GetName()
 	}
 
 	// Check if this is a map.

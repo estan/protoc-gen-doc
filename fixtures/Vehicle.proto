@@ -113,4 +113,14 @@ message Vehicle {
   repeated sint32 rates = 6;
 
   map<string, string> properties = 7; // bag of properties related to the vehicle.
+
+  oneof travel {
+	int32 kilometers = 8;
+	int64 lightyears = 10;
+  }
+
+  oneof drivers {
+	string human_name = 11;
+	string cat_name = 12;
+  }
 }

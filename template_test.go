@@ -138,6 +138,7 @@ func (assert *TemplateTest) TestFieldProperties() {
 	assert.Equal("int32", field.LongType)
 	assert.Equal("int32", field.FullType)
 	assert.Equal("", field.DefaultValue)
+	assert.False(field.IsOneof)
 
 	field = findField("status_code", msg)
 	assert.Equal("status_code", field.Name)
@@ -147,6 +148,7 @@ func (assert *TemplateTest) TestFieldProperties() {
 	assert.Equal("BookingStatus.StatusCode", field.LongType)
 	assert.Equal("com.example.BookingStatus.StatusCode", field.FullType)
 	assert.Equal("", field.DefaultValue)
+	assert.False(field.IsOneof)
 
 	field = findField("category", findMessage("Vehicle", vehicleFile))
 	assert.Equal("category", field.Name)
@@ -156,6 +158,7 @@ func (assert *TemplateTest) TestFieldProperties() {
 	assert.Equal("Vehicle.Category", field.LongType)
 	assert.Equal("com.example.Vehicle.Category", field.FullType)
 	assert.Equal("", field.DefaultValue)
+	assert.False(field.IsOneof)
 
 	field = findField("properties", findMessage("Vehicle", vehicleFile))
 	assert.Equal("properties", field.Name)
@@ -165,6 +168,7 @@ func (assert *TemplateTest) TestFieldProperties() {
 	assert.Equal("com.example.Vehicle.PropertiesEntry", field.FullType)
 	assert.Equal("", field.DefaultValue)
 	assert.True(field.IsMap)
+	assert.False(field.IsOneof)
 
 	field = findField("rates", findMessage("Vehicle", vehicleFile))
 	assert.Equal("rates", field.Name)
@@ -173,6 +177,27 @@ func (assert *TemplateTest) TestFieldProperties() {
 	assert.Equal("sint32", field.LongType)
 	assert.Equal("sint32", field.FullType)
 	assert.False(field.IsMap)
+	assert.False(field.IsOneof)
+
+	field = findField("kilometers", findMessage("Vehicle", vehicleFile))
+	assert.Equal("kilometers", field.Name)
+	assert.Equal("", field.Label)
+	assert.Equal("int32", field.Type)
+	assert.Equal("int32", field.LongType)
+	assert.Equal("int32", field.FullType)
+	assert.False(field.IsMap)
+	assert.True(field.IsOneof)
+	assert.Equal("travel", field.OneofDecl)
+
+	field = findField("human_name", findMessage("Vehicle", vehicleFile))
+	assert.Equal("human_name", field.Name)
+	assert.Equal("", field.Label)
+	assert.Equal("string", field.Type)
+	assert.Equal("string", field.LongType)
+	assert.Equal("string", field.FullType)
+	assert.False(field.IsMap)
+	assert.True(field.IsOneof)
+	assert.Equal("drivers", field.OneofDecl)
 }
 
 func (assert *TemplateTest) TestServiceProperties() {
