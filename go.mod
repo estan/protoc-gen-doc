@@ -15,8 +15,8 @@ require (
 	github.com/pmezard/go-difflib v0.0.0-20151028094244-d8ed2627bdf0 // indirect
 	github.com/pseudomuto/protokit v0.2.0
 	github.com/stretchr/testify v0.0.0-20170130113145-4d4bfba8f1d1
-	golang.org/x/crypto v0.0.0-20180501155221-613d6eafa307 // indirect
-	golang.org/x/sync v0.0.0-20190412183630-56d357773e84 // indirect
+	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550 // indirect
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
 	google.golang.org/genproto v0.0.0-20181107211654-5fc9ac540362
 	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
