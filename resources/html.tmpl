@@ -207,12 +207,13 @@
     {{range .Files}}
       {{$file_name := .Name}}
       <div class="file-heading">
-        <h2 id="{{.Name}}">{{.Name}}</h2><a href="#title">Top</a>
+        <a href="#{{.Name}}"><h2 id="{{.Name}}">{{.Name}}</h2></a><a href="#title">Top</a>
       </div>
       {{p .Description}}
 
       {{range .Messages}}
-        <h3 id="{{.FullName}}">{{.LongName}}</h3>
+        {{$message_name := .FullName}}
+        <a href="#{{.FullName}}"><h3 id="{{.FullName}}">{{.LongName}}</h3></a>
         {{p .Description}}
 
         {{if .HasFields}}
@@ -223,7 +224,7 @@
             <tbody>
               {{range .Fields}}
                 <tr>
-                  <td>{{.Name}}</td>
+                  <td><a href="#{{$message_name}}:{{.Name}}" id="{{$message_name}}:{{.Name}}">{{.Name}}</a></td>
                   <td><a href="#{{.FullType}}">{{.LongType}}</a></td>
                   <td>{{.Label}}</td>
                   <td><p>{{if (index .Options "deprecated"|default false)}}<strong>Deprecated.</strong> {{end}}{{.Description}} {{if .DefaultValue}}Default: {{.DefaultValue}}{{end}}</p></td>
@@ -303,7 +304,8 @@
       {{end}}
 
       {{range .Enums}}
-        <h3 id="{{.FullName}}">{{.LongName}}</h3>
+        {{$enum_name := .FullName}}
+        <a href="#{{.FullName}}"><h3 id="{{.FullName}}">{{.LongName}}</h3></a>
         {{p .Description}}
         <table class="enum-table">
           <thead>
@@ -312,7 +314,7 @@
           <tbody>
             {{range .Values}}
               <tr>
-                <td>{{.Name}}</td>
+                <td><a href="#{{$enum_name}}:{{.Name}}" id="{{$enum_name}}:{{.Name}}">{{.Name}}</a></td>
                 <td>{{.Number}}</td>
                 <td><p>{{.Description}}</p></td>
               </tr>
@@ -342,7 +344,8 @@
       {{end}}
 
       {{range .Services}}
-        <h3 id="{{.FullName}}">{{.Name}}</h3>
+        {{$service_name := .FullName}}
+        <a href="#{{.FullName}}"><h3 id="{{.FullName}}">{{.Name}}</h3></a>
         {{p .Description}}
         <table class="enum-table">
           <thead>
@@ -351,7 +354,7 @@
           <tbody>
             {{range .Methods}}
               <tr>
-                <td>{{.Name}}</td>
+                <td><a href="#{{$service_name}}:{{.Name}}" id="{{$service_name}}:{{.Name}}">{{.Name}}</a></td>
                 <td><a href="#{{.RequestFullType}}">{{.RequestLongType}}</a>{{if .RequestStreaming}} stream{{end}}</td>
                 <td><a href="#{{.ResponseFullType}}">{{.ResponseLongType}}</a>{{if .ResponseStreaming}} stream{{end}}</td>
                 <td><p>{{.Description}}</p></td>
