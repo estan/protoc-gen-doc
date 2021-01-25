@@ -24,6 +24,10 @@ type Template struct {
 func NewTemplate(descs []*protokit.FileDescriptor) *Template {
 	files := make([]*File, 0, len(descs))
 
+	sort.SliceStable(descs, func(i, j int) bool {
+		return descs[i].GetName() < descs[j].GetName()
+	})
+
 	for _, f := range descs {
 		file := &File{
 			Name:          f.GetName(),
