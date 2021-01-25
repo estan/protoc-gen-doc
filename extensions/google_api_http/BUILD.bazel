@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "google_api_http",
+    srcs = ["google_api_http.go"],
+    importpath = "github.com/pseudomuto/protoc-gen-doc/extensions/google_api_http",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//extensions",
+        "@go_googleapis//google/api:annotations_go_proto",
+    ],
+)
+
+go_test(
+    name = "google_api_http_test",
+    srcs = ["google_api_http_test.go"],
+    embed = [":google_api_http"],
+    deps = [
+        "//extensions",
+        "@com_github_stretchr_testify//require:go_default_library",
+        "@go_googleapis//google/api:annotations_go_proto",
+    ],
+)

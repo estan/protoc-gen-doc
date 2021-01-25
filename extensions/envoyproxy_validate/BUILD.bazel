@@ -1,0 +1,25 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "envoyproxy_validate",
+    srcs = ["envoyproxy_validate.go"],
+    importpath = "github.com/pseudomuto/protoc-gen-doc/extensions/envoyproxy_validate",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//extensions",
+        "//thirdparty/github.com/envoyproxy/protoc-gen-validate/validate",
+    ],
+)
+
+go_test(
+    name = "envoyproxy_validate_test",
+    srcs = ["envoyproxy_validate_test.go"],
+    embed = [":envoyproxy_validate"],
+    deps = [
+        "//extensions",
+        "//extensions/lyft_validate",
+        "//thirdparty/github.com/envoyproxy/protoc-gen-validate/validate",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_stretchr_testify//require:go_default_library",
+    ],
+)

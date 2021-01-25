@@ -1,0 +1,66 @@
+
+# bazelrc file
+# bazel >= 0.18 looks for %workspace%/.bazelrc (which redirects here)
+# Older bazel versions look for %workspace%/tools/bazel.rc (this file)
+# See https://github.com/bazelbuild/bazel/issues/6319
+
+
+##
+# Base Settings
+##
+
+common --experimental_allow_incremental_repository_updates
+
+run --incompatible_restrict_string_escapes=false
+run --incompatible_strict_action_env
+
+build --strategy=sandboxed
+build --incompatible_restrict_string_escapes=false
+build --watchfs
+build --symlink_prefix=dist/
+build --nolegacy_external_runfiles
+build --incompatible_strict_action_env
+build --interface_shared_objects
+build --host_java_toolchain=@bazel_tools//tools/jdk:toolchain_vanilla
+
+build --worker_sandboxing
+build --disk_cache=~/.cache/bazel-disk-cache
+build:dbg --compilation_mode=dbg
+
+common:ci --curses=no
+
+build:ci --worker_max_instances=32
+build:ci --local_cpu_resources=32
+build:ci --local_ram_resources="HOST_RAM*.8"
+build:ci --experimental_persistent_javac
+build:ci --verbose_failures
+build:ci --worker_verbose
+build:ci --repository_cache=~/.cache/bazel/repo
+build:ci --disk_cache=~/.cache/bazel/disk
+
+run:ci --worker_max_instances=32
+run:ci --local_cpu_resources=32
+run:ci --local_ram_resources="HOST_RAM*.8"
+run:ci --experimental_persistent_javac
+run:ci --verbose_failures
+run:ci --worker_verbose
+run:ci --repository_cache=~/.cache/bazel/repo
+run:ci --disk_cache=~/.cache/bazel/disk
+
+test:ci --test_output=all
+test:ci --test_verbose_timeout_warnings
+
+fetch:ci --repository_cache=~/.cache/bazel/repo
+query:ci --repository_cache=~/.cache/bazel/repo
+
+build:release --compilation_mode=opt
+build:release --copt=-Wframe-larger-than=16384
+build:release --copt=-O3
+run:release --compilation_mode=opt
+run:release --copt=-Wframe-larger-than=16384
+run:release --copt=-O3
+
+query --output=label_kind
+
+try-import %workspace%/.bazelrc.user
+

@@ -1,0 +1,26 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "validator_field",
+    srcs = ["validator_field.go"],
+    importpath = "github.com/pseudomuto/protoc-gen-doc/extensions/validator_field",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//extensions",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_mwitkow_go_proto_validators//:go_default_library",
+        "@io_bazel_rules_go//proto/wkt:descriptor_go_proto",
+    ],
+)
+
+go_test(
+    name = "validator_field_test",
+    srcs = ["validator_field_test.go"],
+    embed = [":validator_field"],
+    deps = [
+        "//extensions",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@com_github_mwitkow_go_proto_validators//:go_default_library",
+        "@com_github_stretchr_testify//require:go_default_library",
+    ],
+)

@@ -1,0 +1,9 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "lyft_validate",
+    srcs = ["alias.go"],
+    importpath = "github.com/pseudomuto/protoc-gen-doc/extensions/lyft_validate",
+    visibility = ["//visibility:public"],
+    deps = ["//extensions/envoyproxy_validate"],
+)

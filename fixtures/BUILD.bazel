@@ -1,0 +1,30 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "com_example_proto",
+    srcs = [
+        "Booking.proto",
+        "Vehicle.proto",
+    ],
+    visibility = ["//visibility:public"],
+    deps = ["//github.com/pseudomuto/protokit/fixtures:fixtures_proto"],
+)
+
+go_proto_library(
+    name = "com_example_go_proto",
+    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
+    importpath = "github.com/pseudomuto/protoc-gen-doc/fixtures",
+    proto = ":com_example_proto",
+    visibility = ["//visibility:public"],
+    deps = ["//github.com/pseudomuto/protokit/fixtures:extend.proto"],
+)
+
+go_library(
+    name = "fixtures",
+    srcs = ["generate.go"],
+    embed = [":com_example_go_proto"],
+    importpath = "github.com/pseudomuto/protoc-gen-doc/fixtures",
+    visibility = ["//visibility:public"],
+)

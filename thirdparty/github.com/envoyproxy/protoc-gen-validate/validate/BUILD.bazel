@@ -1,0 +1,28 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "validate_proto",
+    srcs = ["validate.proto"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_google_protobuf//:descriptor_proto",
+        "@com_google_protobuf//:duration_proto",
+        "@com_google_protobuf//:timestamp_proto",
+    ],
+)
+
+go_proto_library(
+    name = "validate_go_proto",
+    importpath = "github.com/envoyproxy/protoc-gen-validate/validate",
+    proto = ":validate_proto",
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "validate",
+    embed = [":validate_go_proto"],
+    importpath = "github.com/envoyproxy/protoc-gen-validate/validate",
+    visibility = ["//visibility:public"],
+)
