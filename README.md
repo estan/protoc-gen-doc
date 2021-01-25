@@ -120,7 +120,7 @@ Leading comments can be used everywhere.
 ```protobuf
 /**
  * This is a leading comment for a message
-*/
+ */
 message SomeMessage {
   // this is another leading comment
   string value = 1;
