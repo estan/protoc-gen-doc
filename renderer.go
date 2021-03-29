@@ -20,6 +20,7 @@ const (
 	RenderTypeHTML
 	RenderTypeJSON
 	RenderTypeMarkdown
+	RenderTypeReStructuredText
 )
 
 // NewRenderType creates a RenderType from the supplied string. If the type is not known, (0, error) is returned. It is
@@ -34,6 +35,8 @@ func NewRenderType(renderType string) (RenderType, error) {
 		return RenderTypeJSON, nil
 	case "markdown":
 		return RenderTypeMarkdown, nil
+	case "restructuredtext":
+		return RenderTypeReStructuredText, nil
 	}
 
 	return 0, errors.New("Invalid render type")
@@ -54,6 +57,8 @@ func (rt RenderType) renderer() (Processor, error) {
 		return new(jsonRenderer), nil
 	case RenderTypeMarkdown:
 		return &htmlRenderer{string(tmpl)}, nil
+	case RenderTypeReStructuredText:
+		return &htmlRenderer{string(tmpl)}, nil
 	}
 
 	return nil, errors.New("Unable to create a processor")
@@ -69,6 +74,8 @@ func (rt RenderType) template() ([]byte, error) {
 		return nil, nil
 	case RenderTypeMarkdown:
 		return fetchResource("markdown.tmpl")
+	case RenderTypeReStructuredText:
+		return fetchResource("restructuredtext.tmpl")
 	}
 
 	return nil, errors.New("Couldn't find template for render type")

@@ -58,6 +58,7 @@ docker_test: build tmp/googleapis docker
 	@$(DOCKER_CMD) --doc_opt=html,example.html:Ignore*
 	@$(DOCKER_CMD) --doc_opt=json,example.json:Ignore*
 	@$(DOCKER_CMD) --doc_opt=markdown,example.md:Ignore*
+	@$(DOCKER_CMD) --doc_opt=restructuredtext,example.rst:Ignore*
 	@$(DOCKER_CMD) --doc_opt=/templates/asciidoc.tmpl,example.txt:Ignore*
 
 examples: build tmp/googleapis examples/proto/*.proto examples/templates/*.tmpl
@@ -67,6 +68,7 @@ examples: build tmp/googleapis examples/proto/*.proto examples/templates/*.tmpl
 	@$(EXAMPLE_CMD) --doc_opt=html,example.html:Ignore* examples/proto/*.proto
 	@$(EXAMPLE_CMD) --doc_opt=json,example.json:Ignore* examples/proto/*.proto
 	@$(EXAMPLE_CMD) --doc_opt=markdown,example.md:Ignore* examples/proto/*.proto
+	@$(EXAMPLE_CMD) --doc_opt=restructuredtext,example.srt:Ignore* examples/proto/*.proto
 	@$(EXAMPLE_CMD) --doc_opt=examples/templates/asciidoc.tmpl,example.txt:Ignore* examples/proto/*.proto
 
 release:

@@ -1,0 +1,580 @@
+######################
+Protocol Documentation
+######################
+
+
+
+
+.. _ref_Booking.proto:
+
+Booking.proto
+==================================================================
+
+Booking related messages.
+
+This file is really just an example. The data model is completely
+fictional.
+
+
+
+.. _ref_com.example.Booking:
+
+Booking
+------------------------------------------------------------------
+
+Represents the booking of a vehicle.
+
+Vehicles are some cool shit. But drive carefully!
+
+
+
+.. csv-table:: Booking type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "vehicle_id", ":ref:`ref_int32`", "", "ID of booked vehicle."
+   "customer_id", ":ref:`ref_int32`", "", "Customer that booked the vehicle."
+   "status", ":ref:`ref_com.example.BookingStatus`", "", "Status of the booking."
+   "confirmation_sent", ":ref:`ref_bool`", "", "Has booking confirmation been sent?"
+   "payment_received", ":ref:`ref_bool`", "", "Has payment been received?"
+   "color_preference", ":ref:`ref_string`", "", "**Deprecated.** Color preference of the customer."
+
+
+
+
+
+
+
+.. _ref_com.example.BookingStatus:
+
+BookingStatus
+------------------------------------------------------------------
+
+Represents the status of a vehicle booking.
+
+
+
+.. csv-table:: BookingStatus type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "id", ":ref:`ref_int32`", "", "Unique booking status ID."
+   "description", ":ref:`ref_string`", "", "Booking status description. E.g. &#34;Active&#34;."
+
+
+
+
+
+
+
+.. _ref_com.example.BookingStatusID:
+
+BookingStatusID
+------------------------------------------------------------------
+
+Represents the booking status ID.
+
+
+
+.. csv-table:: BookingStatusID type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "id", ":ref:`ref_int32`", "", "Unique booking status ID."
+
+
+
+
+
+
+
+.. _ref_com.example.EmptyBookingMessage:
+
+EmptyBookingMessage
+------------------------------------------------------------------
+
+An empty message for testing
+
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+
+
+.. _ref_com.example.BookingService:
+
+BookingService
+------------------------------------------------------------------
+
+Service for handling vehicle bookings.
+
+.. csv-table:: BookingService service methods
+   :header: "Method Name", "Request Type", "Response Type", "Description"
+   :widths: auto
+
+   "BookVehicle", ":ref:`ref_com.example.Booking`", ":ref:`ref_com.example.BookingStatus`", "Used to book a vehicle. Pass in a Booking and a BookingStatus will be returned."
+   "BookingUpdates", ":ref:`ref_com.example.BookingStatusID`", ":ref:`ref_com.example.BookingStatus` stream", "Used to subscribe to updates of the BookingStatus."
+ 
+
+
+
+
+.. _ref_Customer.proto:
+
+Customer.proto
+==================================================================
+
+This file has messages for describing a customer.
+
+
+
+.. _ref_com.example.Address:
+
+Address
+------------------------------------------------------------------
+
+Represents a mail address.
+
+
+
+.. csv-table:: Address type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "address_line_1", ":ref:`ref_string`", "required", "First address line."
+   "address_line_2", ":ref:`ref_string`", "optional", "Second address line."
+   "address_line_3", ":ref:`ref_string`", "optional", "Second address line."
+   "town", ":ref:`ref_string`", "required", "Address town."
+   "county", ":ref:`ref_string`", "optional", "Address county, if applicable."
+   "country", ":ref:`ref_string`", "required", "Address country."
+
+
+
+
+
+
+
+.. _ref_com.example.Customer:
+
+Customer
+------------------------------------------------------------------
+
+Represents a customer.
+
+
+
+.. csv-table:: Customer type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "id", ":ref:`ref_int32`", "required", "Unique customer ID."
+   "first_name", ":ref:`ref_string`", "required", "Customer first name."
+   "last_name", ":ref:`ref_string`", "required", "Customer last name."
+   "details", ":ref:`ref_string`", "optional", "Customer details."
+   "email_address", ":ref:`ref_string`", "optional", "Customer e-mail address."
+   "phone_number", ":ref:`ref_string`", "repeated", "Customer phone numbers, primary first."
+   "mail_addresses", ":ref:`ref_com.example.Address`", "repeated", "Customer mail addresses, primary first."
+
+
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+.. _ref_Vehicle.proto:
+
+Vehicle.proto
+==================================================================
+
+Messages describing manufacturers / vehicles.
+
+
+
+.. _ref_com.example.Manufacturer:
+
+Manufacturer
+------------------------------------------------------------------
+
+Represents a manufacturer of cars.
+
+
+
+.. csv-table:: Manufacturer type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "id", ":ref:`ref_int32`", "required", "The unique manufacturer ID."
+   "code", ":ref:`ref_string`", "required", "A manufacturer code, e.g. &#34;DKL4P&#34;."
+   "details", ":ref:`ref_string`", "optional", "Manufacturer details (minimum orders et.c.)."
+   "category", ":ref:`ref_com.example.Manufacturer.Category`", "optional", "Manufacturer category. Default: CATEGORY_EXTERNAL"
+
+
+
+
+
+
+
+.. _ref_com.example.Model:
+
+Model
+------------------------------------------------------------------
+
+Represents a vehicle model.
+
+
+
+.. csv-table:: Model type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "id", ":ref:`ref_string`", "required", "The unique model ID."
+   "model_code", ":ref:`ref_string`", "required", "The car model code, e.g. &#34;PZ003&#34;."
+   "model_name", ":ref:`ref_string`", "required", "The car model name, e.g. &#34;Z3&#34;."
+   "daily_hire_rate_dollars", ":ref:`ref_sint32`", "required", "Dollars per day."
+   "daily_hire_rate_cents", ":ref:`ref_sint32`", "required", "Cents per day."
+
+
+
+
+
+
+
+.. _ref_com.example.Vehicle:
+
+Vehicle
+------------------------------------------------------------------
+
+Represents a vehicle that can be hired.
+
+
+
+.. csv-table:: Vehicle type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "id", ":ref:`ref_int32`", "required", "Unique vehicle ID."
+   "model", ":ref:`ref_com.example.Model`", "required", "Vehicle model."
+   "reg_number", ":ref:`ref_string`", "required", "Vehicle registration number."
+   "mileage", ":ref:`ref_sint32`", "optional", "Current vehicle mileage, if known."
+   "category", ":ref:`ref_com.example.Vehicle.Category`", "optional", "Vehicle category."
+   "daily_hire_rate_dollars", ":ref:`ref_sint32`", "optional", "Dollars per day. Default: 50"
+   "daily_hire_rate_cents", ":ref:`ref_sint32`", "optional", "Cents per day."
+
+
+
+
+
+.. csv-table:: Vehicle type extensions
+   :header: "Extension", "Type", "Base", "Number", "Description"
+   :widths: auto
+
+   "series", "string", "Model", "100", "Vehicle model series."
+
+
+
+
+.. _ref_com.example.Vehicle.Category:
+
+Vehicle.Category
+------------------------------------------------------------------
+
+Represents a vehicle category. E.g. &#34;Sedan&#34; or &#34;Truck&#34;.
+
+
+
+.. csv-table:: Vehicle.Category type fields
+   :header: "Field", "Type", "Label", "Description"
+   :widths: auto
+
+   "code", ":ref:`ref_string`", "required", "Category code. E.g. &#34;S&#34;."
+   "description", ":ref:`ref_string`", "required", "Category name. E.g. &#34;Sedan&#34;."
+
+
+
+
+
+ 
+
+
+
+.. _ref_com.example.Manufacturer.Category:
+
+Manufacturer.Category
+------------------------------------------------------------------
+
+Manufacturer category. A manufacturer may be either inhouse or external.
+
+.. csv-table:: Enum Manufacturer.Category values
+   :header: "Name", "Number", "Description"
+   :widths: auto
+
+   "CATEGORY_INHOUSE", "0", "The manufacturer is inhouse."
+   "CATEGORY_EXTERNAL", "1", "The manufacturer is external."
+
+ 
+
+
+
+.. _ref_Vehicle.proto_extensions:
+
+File-level Extensions
+--------------------------------------------------------------------------------
+
+.. csv-table:: Vehicle.proto file-level Extensions
+   :header: "Extension", "Type", "Base", "Number", "Description"
+   :widths: auto
+
+   "country", "string", "Manufacturer", "100", "Manufacturer country. Default: `China`"
+ 
+
+ 
+
+
+
+.. _ref_scala_types:
+
+Scalar Value Types
+==================
+
+
+
+.. _ref_double:
+
+double
+-----------------------------
+
+
+
+.. csv-table:: double language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "double", "double", "double", "float", "float64", "double", "float", "Float"
+
+
+
+.. _ref_float:
+
+float
+-----------------------------
+
+
+
+.. csv-table:: float language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "float", "float", "float", "float", "float32", "float", "float", "Float"
+
+
+
+.. _ref_int32:
+
+int32
+-----------------------------
+
+Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.
+
+.. csv-table:: int32 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "int32", "int32", "int", "int", "int32", "int", "integer", "Bignum or Fixnum (as required)"
+
+
+
+.. _ref_int64:
+
+int64
+-----------------------------
+
+Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.
+
+.. csv-table:: int64 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "int64", "int64", "long", "int/long", "int64", "long", "integer/string", "Bignum"
+
+
+
+.. _ref_uint32:
+
+uint32
+-----------------------------
+
+Uses variable-length encoding.
+
+.. csv-table:: uint32 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "uint32", "uint32", "int", "int/long", "uint32", "uint", "integer", "Bignum or Fixnum (as required)"
+
+
+
+.. _ref_uint64:
+
+uint64
+-----------------------------
+
+Uses variable-length encoding.
+
+.. csv-table:: uint64 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "uint64", "uint64", "long", "int/long", "uint64", "ulong", "integer/string", "Bignum or Fixnum (as required)"
+
+
+
+.. _ref_sint32:
+
+sint32
+-----------------------------
+
+Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.
+
+.. csv-table:: sint32 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "sint32", "int32", "int", "int", "int32", "int", "integer", "Bignum or Fixnum (as required)"
+
+
+
+.. _ref_sint64:
+
+sint64
+-----------------------------
+
+Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.
+
+.. csv-table:: sint64 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "sint64", "int64", "long", "int/long", "int64", "long", "integer/string", "Bignum"
+
+
+
+.. _ref_fixed32:
+
+fixed32
+-----------------------------
+
+Always four bytes. More efficient than uint32 if values are often greater than 2^28.
+
+.. csv-table:: fixed32 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "fixed32", "uint32", "int", "int", "uint32", "uint", "integer", "Bignum or Fixnum (as required)"
+
+
+
+.. _ref_fixed64:
+
+fixed64
+-----------------------------
+
+Always eight bytes. More efficient than uint64 if values are often greater than 2^56.
+
+.. csv-table:: fixed64 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "fixed64", "uint64", "long", "int/long", "uint64", "ulong", "integer/string", "Bignum"
+
+
+
+.. _ref_sfixed32:
+
+sfixed32
+-----------------------------
+
+Always four bytes.
+
+.. csv-table:: sfixed32 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "sfixed32", "int32", "int", "int", "int32", "int", "integer", "Bignum or Fixnum (as required)"
+
+
+
+.. _ref_sfixed64:
+
+sfixed64
+-----------------------------
+
+Always eight bytes.
+
+.. csv-table:: sfixed64 language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "sfixed64", "int64", "long", "int/long", "int64", "long", "integer/string", "Bignum"
+
+
+
+.. _ref_bool:
+
+bool
+-----------------------------
+
+
+
+.. csv-table:: bool language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "bool", "bool", "boolean", "boolean", "bool", "bool", "boolean", "TrueClass/FalseClass"
+
+
+
+.. _ref_string:
+
+string
+-----------------------------
+
+A string must always contain UTF-8 encoded or 7-bit ASCII text.
+
+.. csv-table:: string language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "string", "string", "String", "str/unicode", "string", "string", "string", "String (UTF-8)"
+
+
+
+.. _ref_bytes:
+
+bytes
+-----------------------------
+
+May contain any arbitrary sequence of bytes.
+
+.. csv-table:: bytes language representation
+   :header: ".proto Type", "C++", "Java", "Python", "Go", "C#", "PHP", "Ruby"
+   :widths: auto
+
+   "bytes", "string", "ByteString", "str", "[]byte", "ByteString", "string", "String (ASCII-8BIT)"
+
+ 
