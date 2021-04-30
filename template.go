@@ -541,6 +541,12 @@ func baseName(name string) string {
 	return parts[len(parts)-1]
 }
 
+func absoluteName(name string) string {
+	parts := strings.Split(name, ".")
+	path := strings.Join(parts[:len(parts)-1], "/")
+	return "/" + path + "#" + name
+}
+
 func labelName(lbl descriptor.FieldDescriptorProto_Label, proto3 bool, proto3Opt bool) string {
 	if proto3 && !proto3Opt && lbl != descriptor.FieldDescriptorProto_LABEL_REPEATED {
 		return ""
@@ -560,11 +566,11 @@ func parseType(tc typeContainer) (string, string, string) {
 
 	if strings.HasPrefix(name, ".") {
 		name = strings.TrimPrefix(name, ".")
-		return baseName(name), strings.TrimPrefix(name, tc.GetPackage()+"."), name
+		return baseName(name), strings.TrimPrefix(name, tc.GetPackage()+"."), absoluteName(name)
 	}
 
 	name = strings.ToLower(strings.TrimPrefix(tc.GetType().String(), "TYPE_"))
-	return name, name, name
+	return name, name, "#" + name
 }
 
 func description(comment string) string {
