@@ -3,6 +3,7 @@ package gendoc
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"sort"
 	"strings"
 
@@ -27,7 +28,7 @@ func NewTemplate(descs []*protokit.FileDescriptor) *Template {
 	for _, f := range descs {
 		file := &File{
 			Name:          f.GetName(),
-			Description:   description(f.GetSyntaxComments().String()),
+			Description:   template.HTML(description(f.GetSyntaxComments().String())),
 			Package:       f.GetPackage(),
 			HasEnums:      len(f.Enums) > 0,
 			HasExtensions: len(f.Extensions) > 0,
@@ -128,9 +129,9 @@ func extractOptions(opts commonOptions) map[string]interface{} {
 //
 // In the case of proto3 files, HasExtensions will always be false, and Extensions will be empty.
 type File struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Package     string `json:"package"`
+	Name        string        `json:"name"`
+	Description template.HTML `json:"description"`
+	Package     string        `json:"package"`
 
 	HasEnums      bool `json:"hasEnums"`
 	HasExtensions bool `json:"hasExtensions"`
@@ -150,29 +151,29 @@ func (f File) Option(name string) interface{} { return f.Options[name] }
 
 // FileExtension contains details about top-level extensions within a proto(2) file.
 type FileExtension struct {
-	Name               string `json:"name"`
-	LongName           string `json:"longName"`
-	FullName           string `json:"fullName"`
-	Description        string `json:"description"`
-	Label              string `json:"label"`
-	Type               string `json:"type"`
-	LongType           string `json:"longType"`
-	FullType           string `json:"fullType"`
-	Number             int    `json:"number"`
-	DefaultValue       string `json:"defaultValue"`
-	ContainingType     string `json:"containingType"`
-	ContainingLongType string `json:"containingLongType"`
-	ContainingFullType string `json:"containingFullType"`
+	Name               string        `json:"name"`
+	LongName           string        `json:"longName"`
+	FullName           string        `json:"fullName"`
+	Description        template.HTML `json:"description"`
+	Label              string        `json:"label"`
+	Type               string        `json:"type"`
+	LongType           string        `json:"longType"`
+	FullType           string        `json:"fullType"`
+	Number             int           `json:"number"`
+	DefaultValue       string        `json:"defaultValue"`
+	ContainingType     string        `json:"containingType"`
+	ContainingLongType string        `json:"containingLongType"`
+	ContainingFullType string        `json:"containingFullType"`
 }
 
 // Message contains details about a protobuf message.
 //
 // In the case of proto3 files, HasExtensions will always be false, and Extensions will be empty.
 type Message struct {
-	Name        string `json:"name"`
-	LongName    string `json:"longName"`
-	FullName    string `json:"fullName"`
-	Description string `json:"description"`
+	Name        string        `json:"name"`
+	LongName    string        `json:"longName"`
+	FullName    string        `json:"fullName"`
+	Description template.HTML `json:"description"`
 
 	HasExtensions bool `json:"hasExtensions"`
 	HasFields     bool `json:"hasFields"`
@@ -226,16 +227,16 @@ func (m Message) FieldsWithOption(optionName string) []*MessageField {
 // In the case of proto3 files, DefaultValue will always be empty. Similarly, label will be empty unless the field is
 // repeated (in which case it'll be "repeated").
 type MessageField struct {
-	Name         string `json:"name"`
-	Description  string `json:"description"`
-	Label        string `json:"label"`
-	Type         string `json:"type"`
-	LongType     string `json:"longType"`
-	FullType     string `json:"fullType"`
-	IsMap        bool   `json:"ismap"`
-	IsOneof      bool   `json:"isoneof"`
-	OneofDecl    string `json:"oneofdecl"`
-	DefaultValue string `json:"defaultValue"`
+	Name         string        `json:"name"`
+	Description  template.HTML `json:"description"`
+	Label        string        `json:"label"`
+	Type         string        `json:"type"`
+	LongType     string        `json:"longType"`
+	FullType     string        `json:"fullType"`
+	IsMap        bool          `json:"ismap"`
+	IsOneof      bool          `json:"isoneof"`
+	OneofDecl    string        `json:"oneofdecl"`
+	DefaultValue string        `json:"defaultValue"`
 
 	Options map[string]interface{} `json:"options,omitempty"`
 }
@@ -254,11 +255,11 @@ type MessageExtension struct {
 
 // Enum contains details about enumerations. These can be either top level enums, or nested (defined within a message).
 type Enum struct {
-	Name        string       `json:"name"`
-	LongName    string       `json:"longName"`
-	FullName    string       `json:"fullName"`
-	Description string       `json:"description"`
-	Values      []*EnumValue `json:"values"`
+	Name        string        `json:"name"`
+	LongName    string        `json:"longName"`
+	FullName    string        `json:"fullName"`
+	Description template.HTML `json:"description"`
+	Values      []*EnumValue  `json:"values"`
 
 	Options map[string]interface{} `json:"options,omitempty"`
 }
@@ -302,9 +303,9 @@ func (e Enum) ValuesWithOption(optionName string) []*EnumValue {
 
 // EnumValue contains details about an individual value within an enumeration.
 type EnumValue struct {
-	Name        string `json:"name"`
-	Number      string `json:"number"`
-	Description string `json:"description"`
+	Name        string 			`json:"name"`
+	Number      string 			`json:"number"`
+	Description template.HTML 	`json:"description"`
 
 	Options map[string]interface{} `json:"options,omitempty"`
 }
@@ -317,7 +318,7 @@ type Service struct {
 	Name        string           `json:"name"`
 	LongName    string           `json:"longName"`
 	FullName    string           `json:"fullName"`
-	Description string           `json:"description"`
+	Description template.HTML     `json:"description"`
 	Methods     []*ServiceMethod `json:"methods"`
 
 	Options map[string]interface{} `json:"options,omitempty"`
@@ -362,16 +363,16 @@ func (s Service) MethodsWithOption(optionName string) []*ServiceMethod {
 
 // ServiceMethod contains details about an individual method within a service.
 type ServiceMethod struct {
-	Name              string `json:"name"`
-	Description       string `json:"description"`
-	RequestType       string `json:"requestType"`
-	RequestLongType   string `json:"requestLongType"`
-	RequestFullType   string `json:"requestFullType"`
-	RequestStreaming  bool   `json:"requestStreaming"`
-	ResponseType      string `json:"responseType"`
-	ResponseLongType  string `json:"responseLongType"`
-	ResponseFullType  string `json:"responseFullType"`
-	ResponseStreaming bool   `json:"responseStreaming"`
+	Name              string        `json:"name"`
+	Description       template.HTML `json:"description"`
+	RequestType       string        `json:"requestType"`
+	RequestLongType   string        `json:"requestLongType"`
+	RequestFullType   string        `json:"requestFullType"`
+	RequestStreaming  bool          `json:"requestStreaming"`
+	ResponseType      string        `json:"responseType"`
+	ResponseLongType  string        `json:"responseLongType"`
+	ResponseFullType  string        `json:"responseFullType"`
+	ResponseStreaming bool          `json:"responseStreaming"`
 
 	Options map[string]interface{} `json:"options,omitempty"`
 }
@@ -401,7 +402,7 @@ func parseEnum(pe *protokit.EnumDescriptor) *Enum {
 		Name:        pe.GetName(),
 		LongName:    pe.GetLongName(),
 		FullName:    pe.GetFullName(),
-		Description: description(pe.GetComments().String()),
+		Description: template.HTML(description(pe.GetComments().String())),
 		Options:     mergeOptions(extractOptions(pe.GetOptions()), extensions.Transform(pe.OptionExtensions)),
 	}
 
@@ -409,7 +410,7 @@ func parseEnum(pe *protokit.EnumDescriptor) *Enum {
 		enum.Values = append(enum.Values, &EnumValue{
 			Name:        val.GetName(),
 			Number:      fmt.Sprint(val.GetNumber()),
-			Description: description(val.GetComments().String()),
+			Description: template.HTML(description(val.GetComments().String())),
 			Options:     mergeOptions(extractOptions(val.GetOptions()), extensions.Transform(val.OptionExtensions)),
 		})
 	}
@@ -424,7 +425,7 @@ func parseFileExtension(pe *protokit.ExtensionDescriptor) *FileExtension {
 		Name:               pe.GetName(),
 		LongName:           pe.GetLongName(),
 		FullName:           pe.GetFullName(),
-		Description:        description(pe.GetComments().String()),
+		Description:        template.HTML(description(pe.GetComments().String())),
 		Label:              labelName(pe.GetLabel(), pe.IsProto3(), pe.GetProto3Optional()),
 		Type:               t,
 		LongType:           lt,
@@ -442,7 +443,7 @@ func parseMessage(pm *protokit.Descriptor) *Message {
 		Name:          pm.GetName(),
 		LongName:      pm.GetLongName(),
 		FullName:      pm.GetFullName(),
-		Description:   description(pm.GetComments().String()),
+		Description:   template.HTML(description(pm.GetComments().String())),
 		HasExtensions: len(pm.GetExtensions()) > 0,
 		HasFields:     len(pm.GetMessageFields()) > 0,
 		HasOneofs:     len(pm.GetOneofDecl()) > 0,
@@ -476,7 +477,7 @@ func parseMessageField(pf *protokit.FieldDescriptor, oneofDecls []*descriptor.On
 
 	m := &MessageField{
 		Name:         pf.GetName(),
-		Description:  description(pf.GetComments().String()),
+		Description:  template.HTML(description(pf.GetComments().String())),
 		Label:        labelName(pf.GetLabel(), pf.IsProto3(), pf.GetProto3Optional()),
 		Type:         t,
 		LongType:     lt,
@@ -509,7 +510,7 @@ func parseService(ps *protokit.ServiceDescriptor) *Service {
 		Name:        ps.GetName(),
 		LongName:    ps.GetLongName(),
 		FullName:    ps.GetFullName(),
-		Description: description(ps.GetComments().String()),
+		Description: template.HTML(description(ps.GetComments().String())),
 		Options:     mergeOptions(extractOptions(ps.GetOptions()), extensions.Transform(ps.OptionExtensions)),
 	}
 
@@ -523,7 +524,7 @@ func parseService(ps *protokit.ServiceDescriptor) *Service {
 func parseServiceMethod(pm *protokit.MethodDescriptor) *ServiceMethod {
 	return &ServiceMethod{
 		Name:              pm.GetName(),
-		Description:       description(pm.GetComments().String()),
+		Description:       template.HTML(description(pm.GetComments().String())),
 		RequestType:       baseName(pm.GetInputType()),
 		RequestLongType:   strings.TrimPrefix(pm.GetInputType(), "."+pm.GetPackage()+"."),
 		RequestFullType:   strings.TrimPrefix(pm.GetInputType(), "."),

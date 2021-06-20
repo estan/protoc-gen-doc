@@ -6,3 +6,5 @@
 /test/*.dat
 /vendor
 /tmp/
+.idea
+*.iml

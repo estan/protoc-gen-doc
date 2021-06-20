@@ -1,6 +1,7 @@
 package gendoc_test
 
 import (
+	html "html/template"
 	"os"
 	"testing"
 
@@ -130,7 +131,7 @@ func TestTemplateProperties(t *testing.T) {
 
 func TestFileProperties(t *testing.T) {
 	require.Equal(t, "Booking.proto", bookingFile.Name)
-	require.Equal(t, "Booking related messages.\n\nThis file is really just an example. The data model is completely\nfictional.", bookingFile.Description)
+	require.Equal(t, html.HTML("Booking related messages.\n\nThis file is really just an example. The data model is completely\nfictional."), bookingFile.Description)
 	require.Equal(t, "com.example", bookingFile.Package)
 	require.True(t, bookingFile.HasEnums)
 	require.True(t, bookingFile.HasExtensions)
@@ -145,7 +146,7 @@ func TestFileEnumProperties(t *testing.T) {
 	require.Equal(t, "StatusCode", enum.Name)
 	require.Equal(t, "BookingStatus.StatusCode", enum.LongName)
 	require.Equal(t, "com.example.BookingStatus.StatusCode", enum.FullName)
-	require.Equal(t, "A flag for the status result.", enum.Description)
+	require.Equal(t, html.HTML("A flag for the status result."), enum.Description)
 	require.Len(t, enum.Values, 2)
 
 	expectedValues := []*EnumValue{
@@ -176,7 +177,7 @@ func TestFileExtensionProperties(t *testing.T) {
 	require.Equal(t, "country", ext.Name)
 	require.Equal(t, "BookingStatus.country", ext.LongName)
 	require.Equal(t, "com.example.BookingStatus.country", ext.FullName)
-	require.Equal(t, "The country the booking occurred in.", ext.Description)
+	require.Equal(t, html.HTML("The country the booking occurred in."), ext.Description)
 	require.Equal(t, "optional", ext.Label)
 	require.Equal(t, "string", ext.Type)
 	require.Equal(t, "string", ext.LongType)
@@ -193,7 +194,7 @@ func TestMessageProperties(t *testing.T) {
 	require.Equal(t, "Vehicle", msg.Name)
 	require.Equal(t, "Vehicle", msg.LongName)
 	require.Equal(t, "com.example.Vehicle", msg.FullName)
-	require.Equal(t, "Represents a vehicle that can be hired.", msg.Description)
+	require.Equal(t, html.HTML("Represents a vehicle that can be hired."), msg.Description)
 	require.False(t, msg.HasExtensions)
 	require.True(t, msg.HasFields)
 	require.NotEmpty(t, msg.Options)
@@ -207,7 +208,7 @@ func TestNestedMessageProperties(t *testing.T) {
 	require.Equal(t, "Category", msg.Name)
 	require.Equal(t, "Vehicle.Category", msg.LongName)
 	require.Equal(t, "com.example.Vehicle.Category", msg.FullName)
-	require.Equal(t, "Represents a vehicle category. E.g. \"Sedan\" or \"Truck\".", msg.Description)
+	require.Equal(t, html.HTML("Represents a vehicle category. E.g. \"Sedan\" or \"Truck\"."), msg.Description)
 	require.False(t, msg.HasExtensions)
 	require.True(t, msg.HasFields)
 }
@@ -225,7 +226,7 @@ func TestMessageExtensionProperties(t *testing.T) {
 	require.Equal(t, "optional_field_1", ext.Name)
 	require.Equal(t, "BookingStatus.optional_field_1", ext.LongName)
 	require.Equal(t, "com.example.BookingStatus.optional_field_1", ext.FullName)
-	require.Equal(t, "An optional field to be used however you please.", ext.Description)
+	require.Equal(t, html.HTML("An optional field to be used however you please."), ext.Description)
 	require.Equal(t, "optional", ext.Label)
 	require.Equal(t, "string", ext.Type)
 	require.Equal(t, "string", ext.LongType)
@@ -245,7 +246,7 @@ func TestFieldProperties(t *testing.T) {
 
 	field := findField("id", msg)
 	require.Equal(t, "id", field.Name)
-	require.Equal(t, "Unique booking status ID.", field.Description)
+	require.Equal(t, html.HTML("Unique booking status ID."), field.Description)
 	require.Equal(t, "required", field.Label)
 	require.Equal(t, "int32", field.Type)
 	require.Equal(t, "int32", field.LongType)
@@ -257,7 +258,7 @@ func TestFieldProperties(t *testing.T) {
 
 	field = findField("status_code", msg)
 	require.Equal(t, "status_code", field.Name)
-	require.Equal(t, "The status of this status?", field.Description)
+	require.Equal(t, html.HTML("The status of this status?"), field.Description)
 	require.Equal(t, "optional", field.Label)
 	require.Equal(t, "StatusCode", field.Type)
 	require.Equal(t, "BookingStatus.StatusCode", field.LongType)
@@ -267,7 +268,7 @@ func TestFieldProperties(t *testing.T) {
 
 	field = findField("category", findMessage("Vehicle", vehicleFile))
 	require.Equal(t, "category", field.Name)
-	require.Equal(t, "Vehicle category.", field.Description)
+	require.Equal(t, html.HTML("Vehicle category."), field.Description)
 	require.Empty(t, field.Label) // proto3, neither required, nor optional are valid
 	require.Equal(t, "Category", field.Type)
 	require.Equal(t, "Vehicle.Category", field.LongType)
@@ -320,7 +321,7 @@ func TestFieldPropertiesProto3(t *testing.T) {
 
 	field := findField("id", msg)
 	require.Equal(t, "id", field.Name)
-	require.Equal(t, "The unique model ID.", field.Description)
+	require.Equal(t, html.HTML("The unique model ID."), field.Description)
 	require.Equal(t, "", field.Label)
 	require.Equal(t, "string", field.Type)
 	require.Equal(t, "string", field.LongType)
@@ -330,7 +331,7 @@ func TestFieldPropertiesProto3(t *testing.T) {
 
 	field = findField("model_code", msg)
 	require.Equal(t, "model_code", field.Name)
-	require.Equal(t, "The car model code, e.g. \"PZ003\".", field.Description)
+	require.Equal(t, html.HTML("The car model code, e.g. \"PZ003\"."), field.Description)
 	require.Equal(t, "", field.Label)
 	require.Equal(t, "string", field.Type)
 	require.Equal(t, "string", field.LongType)
@@ -340,7 +341,7 @@ func TestFieldPropertiesProto3(t *testing.T) {
 
 	field = findField("daily_hire_rate_dollars", msg)
 	require.Equal(t, "daily_hire_rate_dollars", field.Name)
-	require.Equal(t, "Dollars per day.", field.Description)
+	require.Equal(t, html.HTML("Dollars per day."), field.Description)
 	require.Equal(t, "", field.Label)
 	require.Equal(t, "sint32", field.Type)
 	require.Equal(t, "sint32", field.LongType)
@@ -354,7 +355,7 @@ func TestFieldPropertiesProto3Optional(t *testing.T) {
 
 	field := findField("id", msg)
 	require.Equal(t, "id", field.Name)
-	require.Equal(t, "The id of the cookie.", field.Description)
+	require.Equal(t, html.HTML("The id of the cookie."), field.Description)
 	require.Equal(t, "", field.Label)
 	require.Equal(t, "string", field.Type)
 	require.Equal(t, "string", field.LongType)
@@ -364,7 +365,7 @@ func TestFieldPropertiesProto3Optional(t *testing.T) {
 
 	field = findField("name", msg)
 	require.Equal(t, "name", field.Name)
-	require.Equal(t, "The name of the cookie.", field.Description)
+	require.Equal(t, html.HTML("The name of the cookie."), field.Description)
 	require.Equal(t, "optional", field.Label)
 	require.Equal(t, "string", field.Type)
 	require.Equal(t, "string", field.LongType)
@@ -374,7 +375,7 @@ func TestFieldPropertiesProto3Optional(t *testing.T) {
 
 	field = findField("ingredients", msg)
 	require.Equal(t, "ingredients", field.Name)
-	require.Equal(t, "Ingredients in the cookie.", field.Description)
+	require.Equal(t, html.HTML("Ingredients in the cookie."), field.Description)
 	require.Equal(t, "repeated", field.Label)
 	require.Equal(t, "string", field.Type)
 	require.Equal(t, "string", field.LongType)
@@ -388,7 +389,7 @@ func TestServiceProperties(t *testing.T) {
 	require.Equal(t, "VehicleService", service.Name)
 	require.Equal(t, "VehicleService", service.LongName)
 	require.Equal(t, "com.example.VehicleService", service.FullName)
-	require.Equal(t, "The vehicle service.\n\nManages vehicles and such...", service.Description)
+	require.Equal(t, html.HTML("The vehicle service.\n\nManages vehicles and such..."), service.Description)
 	require.Len(t, service.Methods, 3)
 	require.NotEmpty(t, service.Options)
 	require.True(t, *service.Option(E_ExtendService.Name).(*bool))
@@ -401,7 +402,7 @@ func TestServiceMethodProperties(t *testing.T) {
 
 	method := findServiceMethod("AddModels", service)
 	require.Equal(t, "AddModels", method.Name)
-	require.Equal(t, "creates models", method.Description)
+	require.Equal(t, html.HTML("creates models"), method.Description)
 	require.Equal(t, "Model", method.RequestType)
 	require.Equal(t, "Model", method.RequestLongType)
 	require.Equal(t, "com.example.Model", method.RequestFullType)
@@ -413,7 +414,7 @@ func TestServiceMethodProperties(t *testing.T) {
 
 	method = findServiceMethod("GetVehicle", service)
 	require.Equal(t, "GetVehicle", method.Name)
-	require.Equal(t, "Looks up a vehicle by id.", method.Description)
+	require.Equal(t, html.HTML("Looks up a vehicle by id."), method.Description)
 	require.Equal(t, "FindVehicleById", method.RequestType)
 	require.Equal(t, "FindVehicleById", method.RequestLongType)
 	require.Equal(t, "com.example.FindVehicleById", method.RequestFullType)
@@ -433,7 +434,7 @@ func TestExcludedComments(t *testing.T) {
 	require.Empty(t, findField("value", message).Description)
 
 	// just checking that it doesn't exclude everything
-	require.Equal(t, "the id of this message.", findField("id", message).Description)
+	require.Equal(t, html.HTML("the id of this message."), findField("id", message).Description)
 }
 
 func findService(name string, f *File) *Service {
